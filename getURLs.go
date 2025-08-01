@@ -2,6 +2,8 @@ package main
 
 import (
 	"errors"
+	"io"
+	"net/http"
 	"net/url"
 	"strings"
 
@@ -50,4 +52,26 @@ func getURLsFromHTML(htmlBody, rawBaseURL string) ([]string, error) {
 	traverseNodes(node)
 
 	return urls, nil
+}
+
+func getHTML(rawURL string) (string, error) {
+	response, err := http.Get(rawURL)
+	if err != nil {
+		return "", errors.New("unable to get html")
+	}
+
+	if response.StatusCode >= 400 {
+		return "", errors.New("html error status code")
+	}
+
+	if !strings.HasPrefix(response.Header.Get("Content-Type"), "text/html") {
+		return "", errors.New("invalid html content type")
+	}
+
+	content, err := io.ReadAll(response.Body)
+	if err != nil {
+		return "", errors.New("unable to get html content")
+	}
+
+	return string(content), nil
 }
