@@ -36,7 +36,7 @@ func TestNormalizeURL(t *testing.T) {
 			name:          "handle invalid URL",
 			inputURL:      `:\\invalidURL`,
 			expected:      "",
-			errorContains: "couldn't parse URL",
+			errorContains: "unable to parse url",
 		},
 	}
 
